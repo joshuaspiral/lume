@@ -21,5 +21,6 @@ BANDS = {
     "high": (4000, 20000)
 }
 
+FIFO_PATH = "/tmp/spotify-fifo"
 HOST = "0.0.0.0"
 PORT = 8000
