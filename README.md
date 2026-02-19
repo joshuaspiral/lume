@@ -1,26 +1,26 @@
-# lume
+# Lume
 
-light visualiser for triones led light strip.
+Light visualiser for Triones LED light strip.
 
-## what it does
+## What it does
 
-- **music mode** — uses your phone's microphone to analyse audio in real time. the browser does the fft, sends frequency data to the pi over websockets. no app install, no account, no spotify api. just sound.
-- **manual mode** — pick a colour, set an effect, hand off control to someone else.
-- **source handoff** — one phone acts as the audio source at a time. tap "use my phone" to take over. everyone else sees who's broadcasting.
+- **Music Mode** — Uses your phone's microphone to analyse audio in real time. The browser does the FFT, sends frequency data to the Pi over websockets.
+- **Manual Mode** — Pick a colour, set an effect.
+- **Source Handoff** — One phone acts as the audio source at a time. Tap "use my phone" to take over. Everyone else can see who's broadcasting.
 
-## setup
+## Setup
 
 ```bash
-# install dependencies
+# Install dependencies
 pip install websockets bleak
 
-# run
+# Run
 python server.py
 ```
 
-the server binds to `0.0.0.0:8000`. connect any device on the same network to `http://<pi-ip>:8000`.
+The server binds to `0.0.0.0:8000`. Connect any device on the same network to `http://<pi-ip>:8000`.
 
-## hardware
+## Hardware
 
-- raspberry pi zero 2w
-- triones bluetooth led strip
+- Raspberry Pi Zero 2w
+- Triones Bluetooth LED strip
