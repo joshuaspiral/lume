@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # lume deploy script
-# sets up the pi as a standalone wifi access point
+# sets up the pi as a standalone open wifi access point
+# run as root: sudo bash deploy.sh
 
 set -euo pipefail
 
@@ -73,24 +74,7 @@ wmm_enabled=0
 macaddr_acl=0
 auth_algs=1
 ignore_broadcast_ssid=0
-wpa=2
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=TKIP
-rsn_pairwise=CCMP
 EOF
-else
-    cat > /etc/hostapd/hostapd.conf << EOF
-interface=${WIFI_IF}
-driver=nl80211
-ssid=${AP_SSID}
-hw_mode=g
-channel=7
-wmm_enabled=0
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-EOF
-fi
 chmod 600 /etc/hostapd/hostapd.conf
 sed -i 's|#DAEMON_CONF=.*|DAEMON_CONF="/etc/hostapd/hostapd.conf"|' /etc/default/hostapd
 
@@ -151,27 +135,21 @@ sleep 3
 echo ""
 echo "────────────────────────────────────────────────────────"
 echo ""
-systemctl is-active --quiet hostapd && ok "hostapd running" || warn "hostapd failed    — journalctl -u hostapd -n 20"
-systemctl is-active --quiet dnsmasq && ok "dnsmasq running" || warn "dnsmasq failed    — journalctl -u dnsmasq -n 20"
-systemctl is-active --quiet lume    && ok "lume running"    || warn "lume failed       — journalctl -u lume -n 20"
+systemctl is-active --quiet hostapd && ok "hostapd running" || warn "hostapd failed — journalctl -u hostapd -n 20"
+systemctl is-active --quiet dnsmasq && ok "dnsmasq running" || warn "dnsmasq failed — journalctl -u dnsmasq -n 20"
+systemctl is-active --quiet lume    && ok "lume running"    || warn "lume failed    — journalctl -u lume -n 20"
 
 APP_URL="http://${PI_IP}:${LUME_PORT}"
 echo ""
 ok "deploy complete"
 echo ""
-log "network:  ${AP_SSID}$([ -z "$AP_PASS" ] && echo ' (open)' || echo ' (password protected)')"
+log "network:  ${AP_SSID} (open)"
 log "url:      ${APP_URL}"
-log "also:     http://lume.local:${LUME_PORT}"
 echo ""
-
 echo "── for your printed qr codes ────────────────────────────"
 echo ""
 echo "  qr code 1 — join wifi"
-if [[ -n "$AP_PASS" ]]; then
-    echo "  encode: WIFI:T:WPA;S:${AP_SSID};P:${AP_PASS};;"
-else
-    echo "  encode: WIFI:T:nopass;S:${AP_SSID};;"
-fi
+echo "  encode: WIFI:T:nopass;S:${AP_SSID};;"
 echo ""
 echo "  qr code 2 — open app"
 echo "  encode: ${APP_URL}"
@@ -186,4 +164,3 @@ log "  logs:     journalctl -u lume -f"
 log "  restart:  systemctl restart lume"
 log "  status:   systemctl status lume hostapd dnsmasq"
 echo ""
-
